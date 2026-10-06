@@ -1,122 +1,62 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import styled, { createGlobalStyle } from 'styled-components'
+import TodoInput from './components/TodoInput.jsx'
+import TodoList from './components/TodoList.jsx'
+
+const GlobalStyle = createGlobalStyle`
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: #f4f5ef;
+    color: #202923;
+    font-family: 'Trebuchet MS', sans-serif;
+  }
+  button, input { font: inherit; }
+`
+
+const Page = styled.main`
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+`
+const Card = styled.section`
+  width: min(100%, 560px);
+  padding: 36px;
+  background: #fff;
+  border: 1px solid #dfe5dc;
+  border-top: 5px solid #d4783d;
+  box-shadow: 0 18px 50px #26352a12;
+  @media (max-width: 520px) { padding: 26px 20px; }
+`
+const Heading = styled.h1`
+  margin: 0 0 28px;
+  font: 700 40px/1.1 Georgia, serif;
+  color: #263b30;
+`
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('todos') || '[]') }
+    catch { return [] }
+  })
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+  function updateTodos(nextTodos) {
+    setTodos(nextTodos)
+    localStorage.setItem('todos', JSON.stringify(nextTodos))
+  }
 
-      <div className="ticks"></div>
+  function addTodo(text) {
+    updateTodos([...todos, { id: crypto.randomUUID(), text, done: false }])
+  }
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  function toggleTodo(id) {
+    updateTodos(todos.map((todo) => todo.id === id ? { ...todo, done: !todo.done } : todo))
+  }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  return <><GlobalStyle /><Page><Card><Heading>Todo Demo</Heading><TodoInput onAdd={addTodo} /><TodoList todos={todos} onToggle={toggleTodo} /></Card></Page></>
 }
 
 export default App
