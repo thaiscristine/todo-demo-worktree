@@ -56,7 +56,7 @@ function App() {
     updateTodos(todos.map((todo) => todo.id === id ? { ...todo, done: !todo.done } : todo))
   }
 
-  return <><GlobalStyle /><Page><Card><Heading>Todo Demo</Heading><TodoInput onAdd={addTodo} /><TodoList todos={todos} onToggle={toggleTodo} /></Card></Page></>
+  return <><GlobalStyle /><Page><Card><Heading>Testing feature typo</Heading><TodoInput onAdd={addTodo} /><TodoList todos={todos} onToggle={toggleTodo} /></Card></Page></>
 }
 
 export default App
